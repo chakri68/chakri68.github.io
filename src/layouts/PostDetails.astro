@@ -21,6 +21,7 @@ const {
   description,
   ogImage,
   canonicalURL,
+  readingTime,
   pubDatetime,
   modDatetime,
   tags,
@@ -65,6 +66,7 @@ const layoutProps = {
     <Datetime
       pubDatetime={pubDatetime}
       modDatetime={modDatetime}
+      readingTime={readingTime}
       size="lg"
       className="my-2"
     />
@@ -73,7 +75,7 @@ const layoutProps = {
     </article>
 
     <ul class="my-8">
-      {tags.map(tag => <Tag tag={slugifyStr(tag)} />)}
+      {tags.map((tag: any) => <Tag tag={slugifyStr(tag)} />)}
     </ul>
 
     <div
