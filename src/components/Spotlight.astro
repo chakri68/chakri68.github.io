@@ -19,15 +19,8 @@
 </div>
 
 <script is:inline>
-  function setup() {
-    const bg = document.getElementById("bg");
-    const width = parseInt(bg.style.getPropertyValue("--w").replace("px", ""));
-
+  function resetWindowSpotlight() {
     if (window.spotlight) {
-      bg.style.setProperty("--x", window.spotlight.x);
-      bg.style.setProperty("--y", window.spotlight.y);
-      bg.style.setProperty("--o", window.spotlight.o);
-
       if (window.spotlight.mousemove) {
         document.removeEventListener("mousemove", window.spotlight.mousemove);
       }
@@ -40,6 +33,18 @@
     } else {
       window.spotlight = {};
     }
+  }
+
+  function setup() {
+    resetWindowSpotlight();
+    const bg = document.getElementById("bg");
+    if (!bg) return;
+
+    const width = parseInt(bg.style.getPropertyValue("--w").replace("px", ""));
+
+    bg.style.setProperty("--x", window.spotlight.x);
+    bg.style.setProperty("--y", window.spotlight.y);
+    bg.style.setProperty("--o", window.spotlight.o);
 
     window.spotlight.mousemove = e => {
       if (bg.style.getPropertyValue("--o") == 0) {
@@ -65,16 +70,19 @@
 
   function hide() {
     const bg = document.getElementById("bg");
+    if (!bg) return;
     bg.style.setProperty("--o", 0);
   }
 
   function show() {
     const bg = document.getElementById("bg");
+    if (!bg) return;
     bg.style.setProperty("--o", 0.5);
   }
 
   document.addEventListener("astro:before-preparation", ev => {
     const bg = document.getElementById("bg");
+    if (!bg) return;
     window.spotlight = {
       ...window.spotlight,
       x: bg.style.getPropertyValue("--x"),
