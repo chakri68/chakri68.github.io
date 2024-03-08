@@ -1,0 +1,93 @@
+<div
+  style={{
+    zIndex: -1,
+    opacity: 0.5,
+    position: "absolute",
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    overflow: "hidden",
+  }}
+>
+  <div
+    id="bg"
+    class={`absolute aspect-square rounded-full bg-indigo-700 transition-opacity`}
+    style="--o: 0; --w: 300px; width: var(--w); left: var(--x); top: var(--y); opacity: var(--o); filter: blur(calc(var(--w) / 2));"
+  >
+  </div>
+</div>
+
+<script is:inline>
+  function setup() {
+    const bg = document.getElementById("bg");
+    const width = parseInt(bg.style.getPropertyValue("--w").replace("px", ""));
+
+    if (window.spotlight) {
+      bg.style.setProperty("--x", window.spotlight.x);
+      bg.style.setProperty("--y", window.spotlight.y);
+      bg.style.setProperty("--o", window.spotlight.o);
+
+      if (window.spotlight.mousemove) {
+        document.removeEventListener("mousemove", window.spotlight.mousemove);
+      }
+      if (window.spotlight.mouseleave) {
+        document.removeEventListener("mouseleave", window.spotlight.mouseleave);
+      }
+      if (window.spotlight.mouseenter) {
+        document.removeEventListener("mouseenter", window.spotlight.mouseenter);
+      }
+    } else {
+      window.spotlight = {};
+    }
+
+    window.spotlight.mousemove = e => {
+      if (bg.style.getPropertyValue("--o") == 0) {
+        show();
+      }
+      bg.style.setProperty("--x", e.clientX - width / 2 + "px");
+      bg.style.setProperty("--y", e.clientY - width / 2 + "px");
+    };
+    document.addEventListener("mousemove", window.spotlight.mousemove);
+
+    window.spotlight.mouseleave = () => {
+      console.log("leave");
+      hide();
+    };
+    document.addEventListener("mouseleave", window.spotlight.mouseleave);
+
+    window.spotlight.mouseenter = () => {
+      console.log("enter");
+      show();
+    };
+    document.addEventListener("mouseenter", window.spotlight.mouseenter);
+  }
+
+  function hide() {
+    const bg = document.getElementById("bg");
+    bg.style.setProperty("--o", 0);
+  }
+
+  function show() {
+    const bg = document.getElementById("bg");
+    bg.style.setProperty("--o", 0.5);
+  }
+
+  document.addEventListener("astro:before-preparation", ev => {
+    const bg = document.getElementById("bg");
+    window.spotlight = {
+      ...window.spotlight,
+      x: bg.style.getPropertyValue("--x"),
+      y: bg.style.getPropertyValue("--y"),
+      o: bg.style.getPropertyValue("--o"),
+    };
+  });
+
+  document.addEventListener("astro:after-swap", ev => {
+    setup();
+  });
+
+  document.addEventListener("DOMContentLoaded", ev => {
+    setup();
+  });
+</script>
