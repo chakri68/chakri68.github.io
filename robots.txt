@@ -1,0 +1,5 @@
+User-Agent: *
+Allow: /
+
+Host: https://chakri.me
+Sitemap: https://chakri.me/sitemap.xml
